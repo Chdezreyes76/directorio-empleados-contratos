@@ -1,5 +1,12 @@
 # Sistema de Directorio de Empleados y Contratos
 
+## Datos del autor
+**Autor:** Carlos Hernández Reyes
+**Fecha:** 2025/05/24
+**Curso:** Programa Avanzado en Inteligencia Artificial para Programar
+**Institución:** UNIR (Universidad Internacional de La Rioja)
+
+
 ## Objetivo del proyecto
 Este sistema permite gestionar empleados y sus contratos laborales de forma sencilla, escalable y segura. Incluye funcionalidades para alta, baja, búsqueda, actualización y listado de empleados, así como la gestión de contratos asociados, control de vencimientos y consultas avanzadas. El sistema está diseñado para ser modular, fácilmente ampliable y con pruebas unitarias.
 
