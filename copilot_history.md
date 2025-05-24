@@ -309,3 +309,94 @@ Perfecto, veo que lo has hecho ya directamente implementando las mejoras que te 
 
 ## Carlos
 Haré un commit con los cambios realizados y procederemos a la FASE 4.
+
+## Copilot (Claude 3.7 Sonnet Thinking)
+¡Perfecto! Cuando lo indiques, estoy preparado para comenzar con la FASE 4: desarrollo del módulo main.py, que incluirá el menú interactivo por terminal, integración con los módulos de empleados y contratos, manejo de errores y formateo de salida.
+
+¿Quieres que empiece ya con la implementación de la FASE 4 o tienes alguna preferencia sobre la interfaz o el flujo del menú?
+
+## Carlos
+Explicame primero que crees quie podemos hacer para que el menu sea intuitivo y permita ordenadamente la mayora cantidad de opciones posibles, incluidas las peticiones de listados de informacion
+
+## Copilot (Claude 3.7 Sonnet Thinking)
+Para que el menú sea intuitivo, ordenado y permita la mayor cantidad de opciones posibles, incluidas las de listados, te propongo lo siguiente:
+
+**1. Menú principal claro y jerárquico**
+Separar las acciones principales en dos grandes bloques: Gestión de empleados y Gestión de contratos.
+Añadir un bloque para Listados y consultas y otro para Salir.
+
+**2. Submenús para cada bloque**
+Al seleccionar “Gestión de empleados”, mostrar un submenú con opciones: agregar, eliminar, buscar por ID, buscar por nombre, actualizar, listar todos, contar empleados, etc.
+Al seleccionar “Gestión de contratos”, mostrar opciones: asociar contrato, listar contratos de un empleado, listar contratos vencidos, etc.
+
+**3. Listados y consultas**
+Incluir opciones para mostrar listados ordenados (por nombre, por cargo, por vigencia de contrato).
+Permitir búsquedas avanzadas (por nombre, por cargo, por estado de contrato).
+Mostrar resúmenes: número total de empleados, número de empleados con contrato vigente, etc.
+
+**4. Navegación sencilla**
+Permitir volver atrás en cada submenú.
+Confirmar acciones destructivas (eliminar, actualizar).
+Mensajes claros de éxito o error tras cada acción.
+
+**5. Formato visual**
+Numerar las opciones y usar títulos claros.
+Separar visualmente los bloques del menú.
+Mostrar tablas o listados con formato alineado para facilitar la lectura.
+
+Ejemplo de estructura de menú:
+```
+===== MENÚ PRINCIPAL =====
+1. Gestión de empleados
+2. Gestión de contratos
+3. Listados y consultas
+4. Salir
+
+Seleccione una opción:
+```	
+
+Cada opción lleva a un submenú con acciones específicas, y siempre hay una opción para volver al menú anterior.
+
+¿Quieres que te proponga el esquema detallado de menús y submenús antes de implementarlo?
+
+## Carlos
+Me parece perfecto, pero crea una clase menyu.py del main.py por ejemplo en la carpeta src/utils para que quede más limpio y claro el código del flujo principal.
+
+## Copilot (Claude 3.7 Sonnet Thinking)
+He creado la clase Menu en menu.py para gestionar toda la interacción por terminal, con submenús claros y métodos auxiliares para cada acción. Esto permitirá mantener el código de main.py limpio y enfocado solo en la inicialización y el arranque del menú principal.
+
+¿Quieres que adapte ahora el main.py para que utilice esta nueva clase Menu y así completar la integración de la FASE 4?
+
+## Carlos
+He revisado la clase menú y pàrece que incluye todas las opciones posibles, no obnstante si crees que se puede añadir alguna mas quiero que me la añadas al principio del fichero como TODO: para implementarlo más adelante.
+
+## Copilot (Claude 3.7 Sonnet Thinking)
+
+He añadido al principio de menu.py una sección TODO con ideas de funcionalidades adicionales que pueden implementarse en el futuro, como exportar listados, filtros avanzados, edición de contratos, historial de cambios, autenticación, copias de seguridad, ayuda interactiva, eliminación masiva y notificaciones.
+
+```python	
+TODO: Añadir opción para exportar listados a CSV o PDF desde el menú de listados.
+TODO: Incluir opción de filtrar empleados por cargo o rango salarial.
+TODO: Permitir edición de contratos existentes (actualizar fechas o salario).
+TODO: Añadir opción de ver el historial de cambios de un empleado o contrato.
+TODO: Implementar autenticación básica para acceso restringido a ciertas funciones.
+TODO: Añadir opción de realizar copias de seguridad y restauración de datos.
+TODO: Incluir ayuda interactiva o guía de uso desde el menú principal.
+TODO: Permitir la eliminación masiva de empleados o contratos seleccionados.
+TODO: Añadir opción para enviar notificaciones por email sobre contratos próximos a vencer.
+
+```
+
+¿Quieres que adapte ahora el main.py para que utilice la clase Menu y así completar la integración de la FASE 4?
+
+## Carlos
+Perfecto, vamos ahora con la adaptación de main.py para culminar la fase 4
+
+## Copilot (Claude 3.7 Sonnet Thinking)
+
+main.py+10-1
+
+main.py ha sido adaptado para utilizar la clase Menu y lanzar el menú interactivo al ejecutar el programa, culminando así la FASE 4. El flujo principal queda limpio y enfocado únicamente en la inicialización del sistema.
+
+¿Quieres que realice alguna comprobación, test o pasamos a la siguiente fase?
+
