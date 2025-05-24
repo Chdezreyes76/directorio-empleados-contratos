@@ -6,7 +6,17 @@ from src.gestores.gestor_empleados import Empleado, GestorEmpleados
 
 class Contrato:
     """
-    Clase que representa un contrato laboral.
+    Representa un contrato laboral asociado a un empleado.
+
+    Args:
+        id_contrato (int): Identificador único del contrato.
+        fecha_inicio (str): Fecha de inicio en formato 'YYYY-MM-DD'.
+        fecha_fin (str): Fecha de fin en formato 'YYYY-MM-DD'.
+        salario (float): Salario bruto asociado al contrato.
+
+    Métodos:
+        from_dict(data): Crea un Contrato a partir de un diccionario.
+        to_dict(): Convierte el contrato a un diccionario serializable.
     """
     def __init__(self, id_contrato: int, fecha_inicio: str, fecha_fin: str, salario: float):
         self.id_contrato = id_contrato
@@ -16,6 +26,14 @@ class Contrato:
 
     @staticmethod
     def from_dict(data: Dict[str, Any]) -> 'Contrato':
+        """
+        Crea un objeto Contrato a partir de un diccionario.
+
+        Args:
+            data (dict): Diccionario con las claves 'id_contrato', 'fecha_inicio', 'fecha_fin', 'salario'.
+        Returns:
+            Contrato: Instancia creada a partir del diccionario.
+        """
         return Contrato(
             id_contrato=data.get('id_contrato'),
             fecha_inicio=data.get('fecha_inicio'),
@@ -24,6 +42,12 @@ class Contrato:
         )
 
     def to_dict(self) -> Dict[str, Any]:
+        """
+        Convierte el contrato a un diccionario serializable para almacenamiento.
+
+        Returns:
+            dict: Representación serializable del contrato.
+        """
         return {
             "id_contrato": self.id_contrato,
             "fecha_inicio": self.fecha_inicio,
@@ -33,12 +57,29 @@ class Contrato:
 
 class GestorContratos:
     """
-    Clase para gestionar contratos laborales asociados a empleados.
+    Gestiona la asociación, consulta y listado de contratos laborales de empleados.
+    Utiliza el gestor de empleados para mantener la coherencia de los datos.
+
+    Args:
+        ruta_json (str): Ruta al archivo JSON de empleados y contratos.
     """
     def __init__(self, ruta_json: str = "data/empleados.json"):
         self.gestor_empleados = GestorEmpleados(ruta_json)
 
     def asociar_contrato(self, id_empleado: int, fecha_inicio: str, fecha_fin: str, salario: float) -> Optional[Contrato]:
+        """
+        Asocia un nuevo contrato a un empleado existente.
+
+        Args:
+            id_empleado (int): ID del empleado al que se asocia el contrato.
+            fecha_inicio (str): Fecha de inicio (YYYY-MM-DD).
+            fecha_fin (str): Fecha de fin (YYYY-MM-DD).
+            salario (float): Salario bruto del contrato.
+        Returns:
+            Contrato o None: El contrato creado, o None si falla la validación.
+        Raises:
+            ValueError: Si los datos son incorrectos o el empleado no existe.
+        """
         empleados = self.gestor_empleados.cargar_empleados()
         empleado = next((e for e in empleados if e.id == id_empleado), None)
         if not empleado:
@@ -62,6 +103,12 @@ class GestorContratos:
         return contrato
 
     def listar_contratos_vencidos(self) -> List[Dict[str, Any]]:
+        """
+        Devuelve una lista de contratos cuya fecha de fin es anterior a la fecha actual.
+
+        Returns:
+            list[dict]: Lista de contratos vencidos con información del empleado y contrato.
+        """
         empleados = self.gestor_empleados.cargar_empleados()
         hoy = datetime.now().date()
         vencidos = []
@@ -82,6 +129,14 @@ class GestorContratos:
         return vencidos
 
     def listar_contratos_empleado(self, id_empleado: int) -> List[Contrato]:
+        """
+        Lista todos los contratos asociados a un empleado por su ID.
+
+        Args:
+            id_empleado (int): ID del empleado.
+        Returns:
+            list[Contrato]: Lista de contratos del empleado, vacía si no existe.
+        """
         empleado = self.gestor_empleados.buscar_empleado(id_empleado)
         if not empleado:
             return []
