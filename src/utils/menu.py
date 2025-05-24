@@ -122,7 +122,8 @@ class Menu:
             print("1. Listar todos los empleados")
             print("2. Listar empleados con contrato vigente")
             print("3. Listar contratos vencidos")
-            print("4. Volver al menú principal")
+            print("4. Listar empleados con contratos vigentes y vencidos (separados)")
+            print("5. Volver al menú principal")
             opcion = input("Seleccione una opción: ")
             if opcion == "1":
                 self.listar_empleados()
@@ -131,9 +132,50 @@ class Menu:
             elif opcion == "3":
                 self.listar_contratos_vencidos()
             elif opcion == "4":
+                self.listar_empleados_vigentes_y_vencidos()
+            elif opcion == "5":
                 break
             else:
                 print("Opción no válida.")
+
+    def listar_empleados_vigentes_y_vencidos(self):
+        """
+        Muestra dos apartados: empleados con al menos un contrato vigente/indefinido y empleados cuyos contratos están todos vencidos.
+        """
+        from datetime import datetime
+        hoy = datetime.now().date()
+        empleados = self.gestor_empleados.cargar_empleados()
+        vigentes = []
+        vencidos = []
+        for emp in empleados:
+            tiene_vigente = False
+            for c in emp.contratos:
+                fecha_fin = c.get("fecha_fin")
+                if not fecha_fin or fecha_fin == "":
+                    tiene_vigente = True  # Contrato indefinido
+                    break
+                try:
+                    if datetime.strptime(fecha_fin, "%Y-%m-%d").date() >= hoy:
+                        tiene_vigente = True
+                        break
+                except Exception:
+                    continue
+            if tiene_vigente:
+                vigentes.append(emp)
+            else:
+                vencidos.append(emp)
+        print("\n--- EMPLEADOS CON CONTRATO VIGENTE O INDEFINIDO ---")
+        if vigentes:
+            for emp in vigentes:
+                print(f"ID: {emp.id} | Nombre: {emp.nombre} | Cargo: {emp.cargo}")
+        else:
+            print("Ningún empleado con contrato vigente o indefinido.")
+        print("\n--- EMPLEADOS CON TODOS SUS CONTRATOS VENCIDOS ---")
+        if vencidos:
+            for emp in vencidos:
+                print(f"ID: {emp.id} | Nombre: {emp.nombre} | Cargo: {emp.cargo}")
+        else:
+            print("Ningún empleado con todos sus contratos vencidos.")
 
     # Métodos auxiliares para cada acción (implementación básica, se pueden mejorar)
     def agregar_empleado(self):
@@ -239,18 +281,26 @@ class Menu:
 
     def asociar_contrato(self):
         """
-        Asocia un contrato a un empleado existente.
-
-        Se solicitan los datos del contrato y el ID del empleado.
+        Asocia un contrato a un empleado, permitiendo contratos indefinidos si no se introduce fecha de fin.
         """
         print("\n--- Asociar contrato a empleado ---")
         try:
             id_emp = int(input("ID del empleado: "))
-            fecha_inicio = input("Fecha inicio (YYYY-MM-DD): ")
-            fecha_fin = input("Fecha fin (YYYY-MM-DD): ")
+            fecha_inicio = input("Fecha de inicio (YYYY-MM-DD): ")
+            while True:
+                fecha_fin = input("Fecha de fin (YYYY-MM-DD, dejar vacío si es indefinido): ")
+                if not fecha_fin:
+                    confirm = input("¿Confirmas que el contrato es indefinido o vigente? (s/n): ").strip().lower()
+                    if confirm == 's':
+                        fecha_fin = None
+                        break
+                    else:
+                        print("Por favor, introduce la fecha de fin o confirma que es indefinido.")
+                else:
+                    break
             salario = float(input("Salario: "))
             contrato = self.gestor_contratos.asociar_contrato(id_emp, fecha_inicio, fecha_fin, salario)
-            print(f"Contrato asociado (ID: {contrato.id_contrato})")
+            print(f"Contrato asociado correctamente (ID contrato: {contrato.id_contrato})")
         except Exception as e:
             print(f"Error: {e}")
 

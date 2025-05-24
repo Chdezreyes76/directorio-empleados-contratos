@@ -66,9 +66,9 @@ class GestorContratos:
     def __init__(self, ruta_json: str = "data/empleados.json"):
         self.gestor_empleados = GestorEmpleados(ruta_json)
 
-    def asociar_contrato(self, id_empleado: int, fecha_inicio: str, fecha_fin: str, salario: float) -> Optional[Contrato]:
+    def asociar_contrato(self, id_empleado: int, fecha_inicio: str, fecha_fin: Optional[str], salario: float) -> Optional[Contrato]:
         """
-        Asocia un nuevo contrato a un empleado existente.
+        Asocia un nuevo contrato a un empleado existente. Permite contratos indefinidos si fecha_fin es None.
 
         Args:
             id_empleado (int): ID del empleado al que se asocia el contrato.
@@ -87,9 +87,11 @@ class GestorContratos:
         # Validación de fechas y salario
         try:
             fi = datetime.strptime(fecha_inicio, "%Y-%m-%d")
-            ff = datetime.strptime(fecha_fin, "%Y-%m-%d")
-            if ff < fi:
-                raise ValueError("La fecha de fin no puede ser anterior a la de inicio.")
+            if fecha_fin:
+                ff = datetime.strptime(fecha_fin, "%Y-%m-%d")
+                if ff < fi:
+                    raise ValueError("La fecha de fin no puede ser anterior a la de inicio.")
+            # Si fecha_fin es None, se considera contrato indefinido
             if salario <= 0:
                 raise ValueError("El salario debe ser positivo.")
         except Exception as e:

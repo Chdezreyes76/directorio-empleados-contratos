@@ -682,4 +682,77 @@ Aquí tienes un resumen de los cambios realizados en la documentación (docstrin
 
 Con estos cambios, el código es mucho más comprensible y mantenible, facilitando su uso y ampliación por otros desarrolladores. ¿Quieres que genere un resumen global para documentación o pasamos a la siguiente fase?
 
+## Carlos
+Estoy haciendo pruebas manuales para ejecutar la fase 7. He encontardo que cuando se asocia un contrato a un empleado, si no se le pone fecha de finalización no lo asocia. Esto puede deberse a dos motivos, que sea un error o que efectivamente el contrato no tenga fecha de fin porque es un contrato de duracion indefinida o que este vigente. Primero quiero que analices porque esta ocurriendo esto de que si no se introduce fecha de fin no se asocia el contrato. Busca la causa y explicamela
+
+## Copilot (Claude 3.7 Sonnet Thinking)
+La causa de que no se asocie un contrato si no se introduce fecha de finalización se debe a la lógica de validación implementada en el método asociar_contrato de la clase GestorContratos (en gestor_contratos.py):
+
+- El método espera que siempre se le pase un valor para fecha_fin y realiza una validación estricta:
+```	
+fi = datetime.strptime(fecha_inicio, "%Y-%m-%d")
+ff = datetime.strptime(fecha_fin, "%Y-%m-%d")
+if ff < fi:
+    raise ValueError("La fecha de fin no puede ser anterior a la de inicio.")
+```
+
+- Si fecha_fin es None o una cadena vacía, la función datetime.strptime(fecha_fin, "%Y-%m-%d") lanzará una excepción, lo que provoca que el contrato no se asocie y se muestre un error de validación.
+
+Conclusión:
+
+Actualmente, el sistema requiere obligatoriamente una fecha de fin para asociar un contrato. No contempla contratos indefinidos (sin fecha de fin), ya que la validación y la conversión de fecha fallan si el campo está vacío o es nulo.
+
+¿Quieres que te proponga cómo modificar la lógica para permitir contratos sin fecha de fin (indefinidos)?
+
+## Carlos
+Quiero que si el usuario no introduce una fecha de finalizacion, le muestres un mensaje para que confirme que el conttrato es vigente o indefinido. Si lo confirma debe poder registrarse el contrato sin fecha de fin, si no lo confirma le vuelves a ofrecer la opcion de que introduzca la fecha de finalizacion
+
+## Copilot (Claude 3.7 Sonnet Thinking)
+
+Leer menu.py, líneas 1 a 227
+
+Leer gestor_contratos.py, líneas 1 a 89
+
+Para implementar la funcionalidad que deseas, hay que modificar el flujo en el método de menú que solicita los datos del contrato (en menu.py, método asociar_contrato). El objetivo es:
+
+- Si el usuario deja vacía la fecha de finalización, mostrarle un mensaje de confirmación preguntando si el contrato es indefinido o vigente.
+- Si confirma, permitir registrar el contrato con fecha_fin vacía o None.
+- Si no confirma, volver a pedir la fecha de finalización.
+
+Además, hay que adaptar la lógica de validación en GestorContratos.asociar_contrato para aceptar contratos sin fecha de fin.
+
+Voy a realizar estos cambios en ambos archivos (menu.py y gestor_contratos.py).
+
+menu.py
+gestor_contratos.py+4-2
+
+Listo. Ahora, si el usuario no introduce una fecha de finalización al asociar un contrato, se le pedirá confirmación para registrar el contrato como indefinido o vigente. Si confirma, el contrato se guarda sin fecha de fin; si no, se le vuelve a pedir la fecha.
+
+La lógica de validación en GestorContratos también ha sido adaptada para aceptar contratos sin fecha de fin.
+
+¿Quieres probar el flujo o necesitas algún ajuste adicional?
+
+## Carlos
+He probado el flujo y funciona correctamente. Ahora se puede asociar un contrato sin fecha de finalización, confirmando que es indefinido o vigente.
+Vamos a añadir un listado nuevo que incluya todos los empleados con contratos vigentes y los empleados con contratos vencidos, separados en dos apartados.
+Esto nos permitirá tener una visión clara de la situación de los contratos de todos los empleados.
+
+## Copilot (Claude 3.7 Sonnet Thinking)
+Leer menu.py, líneas 1 a 305
+
+Para implementar el listado solicitado, añadiré una nueva opción en el submenú de listados que muestre:
+
+Un apartado con todos los empleados con al menos un contrato vigente (fecha de fin en el futuro o contrato indefinido).
+Un apartado con todos los empleados cuyos contratos están todos vencidos (fecha de fin pasada en todos sus contratos).
+Voy a crear un método listar_empleados_vigentes_y_vencidos en Menu y lo añadiré al submenú de listados.
+
+menu.py+43-1
+Ya tienes disponible en el menú de listados una nueva opción que muestra:
+
+Empleados con al menos un contrato vigente o indefinido.
+Empleados con todos sus contratos vencidos.
+Ambos apartados aparecen claramente separados en la salida por terminal. Puedes probarlo desde el menú de listados, opción "Listar empleados con contratos vigentes y vencidos (separados)".
+
+¿Quieres algún ajuste visual o funcional adicional para este listado?
+
 
